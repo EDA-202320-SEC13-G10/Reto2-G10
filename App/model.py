@@ -60,7 +60,7 @@ def new_data_structs():
     
 
     catalog["scorer"] =  mp.newMap(800,
-                            maptype="CHAINIG",
+                            maptype="CHAINING",
                             loadfactor = 4)
     return  catalog
 # Funciones para agregar informacion al modelo
@@ -92,7 +92,7 @@ def new_Scorer(name):
     return player
 
 def addScorer(catalog,name,dato):
-    scorers =  catalog["model"]["scorer"]
+    scorers =  catalog["scorer"]
     existPlayer =  mp.contains(scorers,name)
     if existPlayer:
         entry = mp.get(scorers,name)

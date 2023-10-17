@@ -58,7 +58,7 @@ def load_scorers(control):
     scorer_file  = cf.data_dir + 'football/goalscorers-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for player in input_file:
-        model.addScorer(control,player["scorer"],player)
+        model.addScorer(control["model"],player["scorer"],player)
 # Funciones de ordenamiento
 
 def sort(control):

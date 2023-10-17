@@ -52,9 +52,17 @@ def new_data_structs():
     manera vacía para posteriormente almacenar la información.
     """
     #TODO: Inicializar las estructuras de datos
-    pass
+    catalog = {
+        "results" : None,
+        "scorer" : None,
+        "shootouts" :None
+    }
+    
 
-
+    catalog["scorer"] =  mp.newMap(800,
+                            maptype="CHAINIG",
+                            loadfactor = 4)
+    return  catalog
 # Funciones para agregar informacion al modelo
 
 def add_data(data_structs, data):
@@ -73,9 +81,26 @@ def new_data(id, info):
     """
     #TODO: Crear la función para estructurar los datos
     pass
+def new_Scorer(name):
+    player = {
+        "name" : "",
+        "datos" : None
+    }
+    player["name"] =  name
+    player["datos"] =  lt.newList("ARRAY_LIST")
 
+    return player
 
-# Funciones de consulta
+def addScorer(catalog,name,dato):
+    scorers =  catalog["model"]["scorer"]
+    existPlayer =  mp.contains(scorers,name)
+    if existPlayer:
+        entry = mp.get(scorers,name)
+        player = me.getValue(entry)
+    else:
+        player = new_Scorer(name)
+        mp.put(scorers,name,player)
+    lt.addLast(player["datos"],dato)
 
 def get_data(data_structs, id):
     """

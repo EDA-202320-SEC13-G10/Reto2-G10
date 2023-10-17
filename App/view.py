@@ -45,7 +45,7 @@ def new_controller():
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función del controlador donde se crean las estructuras de datos
-    pass
+    return controller.new_controller
 
 
 def print_menu():
@@ -67,7 +67,8 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    controller.load_data(control)
+    return (control["model"]["scorer"])
 
 
 def print_data(control, id):
@@ -157,6 +158,7 @@ if __name__ == "__main__":
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
             data = load_data(control)
+            print(data)
         elif int(inputs) == 2:
             print_req_1(control)
 

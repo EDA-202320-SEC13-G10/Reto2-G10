@@ -61,7 +61,7 @@ def new_data_structs():
 
     catalog["scorer"] =  mp.newMap(800,
                             maptype="CHAINING",
-                            loadfactor = 4)
+                            loadfactor = 8)
     return  catalog
 # Funciones para agregar informacion al modelo
 
@@ -81,12 +81,10 @@ def new_data(id, info):
     """
     #TODO: Crear la función para estructurar los datos
     pass
-def new_Scorer(name):
+def new_Scorer():
     player = {
-        "name" : "",
         "datos" : None
     }
-    player["name"] =  name
     player["datos"] =  lt.newList("ARRAY_LIST")
 
     return player
@@ -98,7 +96,7 @@ def addScorer(catalog,name,dato):
         entry = mp.get(scorers,name)
         player = me.getValue(entry)
     else:
-        player = new_Scorer(name)
+        player = new_Scorer()
         mp.put(scorers,name,player)
     lt.addLast(player["datos"],dato)
 

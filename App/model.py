@@ -57,9 +57,15 @@ def new_data_structs():
         "scorer" : None,
         "shootouts" :None
     }
-    
+    catalog["results"] =  mp.newMap(1759,
+                            maptype="CHAINING",
+                            loadfactor = 8)
 
     catalog["scorer"] =  mp.newMap(800,
+                            maptype="CHAINING",
+                            loadfactor = 8)
+    
+    catalog["shootouts"] =  mp.newMap(17,
                             maptype="CHAINING",
                             loadfactor = 8)
     return  catalog
@@ -72,6 +78,23 @@ def add_data(data_structs, data):
     #TODO: Crear la función para agregar elementos a una lista
     pass
 
+def add_results(catalog, dato, idunica ):
+    results = catalog["results"]
+    exitsResults =  mp.contains(results,idunica)
+    if exitsResults == False:
+        mp.put(results,idunica,dato)
+
+def add_scorer(catalog, dato, idunica ):
+    scorer = catalog["scorer"]
+    exitsscorer =  mp.contains(scorer,idunica)
+    if exitsscorer == False:
+        mp.put(scorer,idunica,dato)
+
+def add_shootouts(catalog, dato, idunica ):
+    shootouts = catalog["shootouts"]
+    exitsshootouts =  mp.contains(shootouts,idunica)
+    if exitsshootouts == False:
+        mp.put(shootouts,idunica,dato)
 
 # Funciones para creacion de datos
 
@@ -81,7 +104,7 @@ def new_data(id, info):
     """
     #TODO: Crear la función para estructurar los datos
     pass
-def new_Scorer():
+"""def new_Scorer():
     player = {
         "datos" : None
     }
@@ -98,7 +121,7 @@ def addScorer(catalog,name,dato):
     else:
         player = new_Scorer()
         mp.put(scorers,name,player)
-    lt.addLast(player["datos"],dato)
+    lt.addLast(player["datos"],dato)"""
 
 def get_data(data_structs, id):
     """

@@ -67,7 +67,18 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    return controller.load_data(control)
+
+    controller.load_data(control)
+
+    dato = control["model"]["results"]
+    dato1 = control["model"]["scorer"]
+    dato2 = control["model"]["shootouts"]
+
+
+    print (mp.size(dato))
+    print (mp.size(dato1))
+    print (mp.size(dato2))
+    print (dato2)
 
 
 def print_data(control, id):

@@ -60,6 +60,8 @@ def load_data(control,memflag=True):
         tracemalloc.start()
         start_memory = getMemory()
     load_scorers(control)
+    load_results(control)
+    load_shootouts(control)
     stop_time = getTime()
     # calculando la diferencia en tiempo
     delta_time = deltaTime(stop_time, start_time)
@@ -78,10 +80,26 @@ def load_data(control,memflag=True):
         return delta_time
 
 def load_scorers(control):
-    scorer_file  = cf.data_dir + 'football/goalscorers-utf8-large.csv'
+    scorer_file  = cf.data_dir + 'football/goalscorers-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
-    for player in input_file:
-        model.addScorer(control["model"],player["scorer"],player)
+    for r in input_file:
+        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
+        model.add_scorer(control["model"],r,idunica)
+
+
+def load_results(control):
+    scorer_file  = cf.data_dir + 'football/results-utf8-small.csv'
+    input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
+    for r in input_file:
+        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
+        model.add_results(control["model"],r,idunica)
+
+def load_shootouts(control):
+    scorer_file  = cf.data_dir + 'football/shootouts-utf8-small.csv'
+    input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
+    for r in input_file:
+        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
+        model.add_shootouts(control["model"],r,idunica)        
 # Funciones de ordenamiento
 
 def sort(control):

@@ -157,12 +157,13 @@ def req_4(control, name, fecha_ini, fecha_fin):
     return map4
 
 
-def req_5(control):
+def req_5(control, name, fecha_ini, fecha_fin):
     """
     Retorna el resultado del requerimiento 5
     """
     # TODO: Modificar el requerimiento 5
-    pass
+    map5 = model.req_5(control, name, fecha_ini, fecha_fin)
+    return map5
 
 def req_6(control):
     """

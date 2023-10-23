@@ -37,6 +37,7 @@ from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 assert cf
+import time
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá
@@ -55,7 +56,10 @@ def new_data_structs():
     catalog = {
         "results" : None,
         "scorer" : None,
-        "shootouts" :None
+        "shootouts" :None,
+        "tournaments" :None,
+        "player" :None,
+        "team": None
     }
     catalog["results"] =  mp.newMap(1759,
                             maptype="CHAINING",
@@ -213,12 +217,57 @@ def req_3(data_structs):
     pass
 
 
-def req_4(data_structs):
+def req_4(data_structs, name, fecha_ini, fecha_fin):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    pass
+    torneos = data_structs["tournaments"]
+    penales = data_structs["shootouts"]
+    fecha_inicio = time.strptime(fecha_ini, "%Y-%m-%d")
+    fecha_final = time.strptime(fecha_fin, "%Y-%m-%d")
+    t = mp.get(torneos, name)
+    torneo = me.getValue(t)
+    cant_torn = len(mp.keySet(torneos))
+    matches = 0
+    countries = []
+    cities = []
+    shootout = 0
+    nl = lt.newList("ARRAY_LIST")
+    for i in torneo:
+        fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
+        if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
+            x = {}
+            matches += 1
+            if not(i["country"]) in countries:
+                countries.append(i["country"])
+            if not(i["city"]) in cities:
+                cities.append(i["city"])
+            x["date"] = i["date"]
+            x["tournament"] = i["tournament"]
+            x["country"] = i["country"]
+            x["home_team"] = i["home_team"]
+            x["away_team"] = i["away_team"]
+            x["home_score"] = i["home_score"]
+            x["away_score"] = i["away_score"]
+            x["winner"] = "Unavailable"
+            idunica = str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+            if mp.contains(penales, idunica):
+                shootout += 1
+                p = me.getValue(mp.get(penales, idunica))
+                x["winner"] = p["winner"]
+            lt.addLast(nl, x)
+    map4 = mp.newMap()
+    mp.put(map4, "values", nl)
+    mp.put(map4, "tournaments", cant_torn)
+    mp.put(map4, "matches", matches)
+    mp.put(map4, "countries", len(countries))
+    mp.put(map4, "cities", len(cities))
+    mp.put(map4, "shootout", shootout)
+    return map4
+            
+    
+    
 
 
 def req_5(data_structs):

@@ -222,19 +222,18 @@ def req_4(data_structs, name, fecha_ini, fecha_fin):
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    torneos = data_structs["tournaments"]
-    penales = data_structs["shootouts"]
+    torneos = data_structs["model"]["tournaments"]
+    penales = data_structs["model"]["shootouts"]
     fecha_inicio = time.strptime(fecha_ini, "%Y-%m-%d")
     fecha_final = time.strptime(fecha_fin, "%Y-%m-%d")
-    t = mp.get(torneos, name)
-    torneo = me.getValue(t)
+    t = me.getValue(mp.get(torneos, name))
     cant_torn = len(mp.keySet(torneos))
     matches = 0
     countries = []
     cities = []
     shootout = 0
     nl = lt.newList("ARRAY_LIST")
-    for i in torneo:
+    for i in lt.iterator(t):
         fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
         if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
             x = {}

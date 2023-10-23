@@ -118,20 +118,32 @@ def print_req_3(control):
     pass
 
 
-def print_req_4(control):
+def print_req_4(control, name, fecha_ini, fecha_fin):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    map4 = controller.req_4(control, name, fecha_ini, fecha_fin)
+    print(me.getValue(mp.get(map4,"tournaments")))
+    print(me.getValue(mp.get(map4,"matches")))
+    print(me.getValue(mp.get(map4,"countries")))
+    print(me.getValue(mp.get(map4,"cities")))
+    print(me.getValue(mp.get(map4,"shootout")))
+    print(tabulate(me.getValue(mp.get(map4,"values"))["elements"], headers = "keys" , tablefmt='grid'))
 
 
-def print_req_5(control):
+def print_req_5(control, name, fecha_ini, fecha_fin):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    map5 = controller.req_5(control, name, fecha_ini, fecha_fin)
+    print(me.getValue(mp.get(map5,"players")))
+    print(me.getValue(mp.get(map5,"goals")))
+    print(me.getValue(mp.get(map5,"tournaments")))
+    print(me.getValue(mp.get(map5,"penalties")))
+    print(me.getValue(mp.get(map5,"autogoals")))
+    print(tabulate(me.getValue(mp.get(map5,"values"))["elements"], headers = "keys" , tablefmt='grid'))
 
 
 def print_req_6(control):
@@ -185,10 +197,10 @@ if __name__ == "__main__":
             print_req_3(control)
 
         elif int(inputs) == 5:
-            print_req_4(control)
+            print_req_4(control, "Copa América", "1955-06-01", "2022-06-30")
 
         elif int(inputs) == 6:
-            print_req_5(control)
+            print_req_5(control, "Ali Daei", "1999-03-25", "2021-11-23")
 
         elif int(inputs) == 7:
             print_req_6(control)

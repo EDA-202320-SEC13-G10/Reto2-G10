@@ -129,6 +129,7 @@ def print_req_4(control, name, fecha_ini, fecha_fin):
     print(me.getValue(mp.get(map4,"countries")))
     print(me.getValue(mp.get(map4,"cities")))
     print(me.getValue(mp.get(map4,"shootout")))
+    print(tabulate(me.getValue(mp.get(map4,"values"))["elements"], headers = "keys" , tablefmt='grid'))
 
 
 def print_req_5(control):

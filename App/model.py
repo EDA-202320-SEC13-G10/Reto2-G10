@@ -23,8 +23,7 @@
  *
  * Dario Correal - Version inicial
  """
-
-
+import time
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
@@ -189,13 +188,22 @@ def data_size(data_structs):
     pass
 
 
-def req_1(data_structs):
+def req_1(data_structs, team, home):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
-    pass
+    teams =  data_structs["team"]
+    y = me.getValue(mp.get(teams,team))
 
+    x = "datos_home"
+    if home  == "away":
+        x = "datos_away"
+    nl =  lt.newList("ARRAY_LIST")
+    for i in y[x]["elements"]:
+        lt.addLast(nl,i)
+    return merg.sort(nl,compare_dates_inter)
+    
 
 def req_2(data_structs):
     """
@@ -255,12 +263,12 @@ def req_8(data_structs):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-def compare(data_1, data_2):
+def compare1(data_1, data_2):
     """
     Función encargada de comparar dos datos
     """
     #TODO: Crear función comparadora de la lista
-    if data_1["info"]["date"] < data_2["info"]["date"]:
+    if data_1["date"] < data_2["date"]:
         return 0
     else:
         return 1
@@ -281,7 +289,12 @@ def sort_criteria(data_1, data_2):
     #TODO: Crear función comparadora para ordenar
     pass
 
-
+def compare_dates_inter(data_1,  data_2):
+    x = (data_1["date"])
+    y = (data_2["date"])
+    first = time.strptime(x, "%Y-%m-%d")
+    second = time.strptime(y, "%Y-%m-%d")
+    return first < second
 def sort(data_structs):
     """
     Función encargada de ordenar la lista con los datos

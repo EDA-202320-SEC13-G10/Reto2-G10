@@ -73,16 +73,17 @@ def load_data(control):
     dato = control["model"]["results"]
     dato1 = control["model"]["scorer"]
     dato2 = control["model"]["shootouts"]
-    dato3 = control["model"]["tournaments"]
+    dato3 = control["model"]["team"]
 
 
     print (mp.size(dato))
     print (mp.size(dato1))
     print (mp.size(dato2))
 
-    z = me.getValue(mp.get(dato3,"UEFA Euro qualification"))
 
-    print(z)
+    o = controller.req_1(control,"Italy", "home")
+    print(tabulate(o["elements"], headers = "keys" , tablefmt='grid'))
+    
 
 
 def print_data(control, id):

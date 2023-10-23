@@ -227,13 +227,14 @@ def req_4(data_structs, name, fecha_ini, fecha_fin):
     fecha_inicio = time.strptime(fecha_ini, "%Y-%m-%d")
     fecha_final = time.strptime(fecha_fin, "%Y-%m-%d")
     t = me.getValue(mp.get(torneos, name))
-    cant_torn = len(mp.keySet(torneos))
+    torneo = t["datos"]["elements"]
+    cant_torn = mp.keySet(torneos)["size"]
     matches = 0
     countries = []
     cities = []
     shootout = 0
     nl = lt.newList("ARRAY_LIST")
-    for i in lt.iterator(t):
+    for i in torneo:
         fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
         if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
             x = {}

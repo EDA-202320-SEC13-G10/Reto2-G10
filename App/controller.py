@@ -83,9 +83,10 @@ def load_scorers(control):
     scorer_file  = cf.data_dir + 'football/goalscorers-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for r in input_file:
-        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"]+ "-" + r["minute"])
+        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
         model.add_scorer(control["model"],r,idunica)
         model.addPlayer(control["model"],r["scorer"],r)
+        model.add_player_names(control["model"]["player_names"],r["scorer"])
 
 
 def load_results(control):
@@ -97,7 +98,9 @@ def load_results(control):
         model.addTeam(control["model"],r["home_team"],r,"home")
         model.addTeam(control["model"],r["away_team"],r,"away")
         model.addtournament(control["model"],r["tournament"],r)
-
+        model.add_team_names(control["model"]["teams_names"],r["home_team"])
+        model.add_team_names(control["model"]["teams_names"],r["away_team"])
+        
 def load_shootouts(control):
     scorer_file  = cf.data_dir + 'football/shootouts-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
@@ -132,20 +135,21 @@ def req_1(control,team, home):
     return model.req_1(control["model"],team, home)
 
 
-def req_2(control):
+def req_2(control,name):
     """
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    pass
+    return model.req_2(control["model"],name)
 
 
-def req_3(control):
+def req_3(control,team,date_i,date_f):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    pass
+    return model.req_6(control["model"])
+
 
 
 def req_4(control):

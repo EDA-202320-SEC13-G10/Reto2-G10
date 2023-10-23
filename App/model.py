@@ -74,10 +74,14 @@ def new_data_structs():
     catalog["player"] = mp.newMap(80,
                             maptype="CHAINING",
                             loadfactor = 8)
+    catalog["player_names"] = lt.newList("ARRAY_LIST")
+
+    catalog["teams_names"] = lt.newList("ARRAY_LIST")
     
     catalog["tournaments"] = mp.newMap(80,
                             maptype="CHAINING",
                             loadfactor = 8)
+                            
     return  catalog
 # Funciones para agregar informacion al modelo
 
@@ -95,11 +99,26 @@ def add_results(catalog, dato, idunica):
     if exitsResults == False:
         mp.put(results,idunica,dato)
 
+
+def new_Scorer():
+    games = {
+        "datos" : None
+    }
+    games["datos"] =  lt.newList("ARRAY_LIST")
+    return games
+
+
 def add_scorer(catalog, dato, idunica ):
     scorer = catalog["scorer"]
     exitsscorer =  mp.contains(scorer,idunica)
-    if exitsscorer == False:
-        mp.put(scorer,idunica,dato)
+    if exitsscorer:
+        entry = mp.get(scorer,idunica)
+        game = me.getValue(entry)
+    else:
+        game = new_Scorer()
+        mp.put(scorer,idunica,game)
+    lt.addLast(game["datos"],dato)
+
 
 def add_shootouts(catalog, dato, idunica ):
     shootouts = catalog["shootouts"]
@@ -153,6 +172,13 @@ def addPlayer(catalog,name,dato):
         mp.put(Players,name,player)
     lt.addLast(player["datos"],dato)
 
+def add_player_names(lista,name):
+    if lt.isPresent(lista,name) == 0:
+        lt.addLast(lista,name)
+def add_team_names(lista,name):
+    if lt.isPresent(lista,name) == 0:
+        lt.addLast(lista,name)
+
 def new_tournament():
     tournaments = {
         "datos" : None
@@ -200,27 +226,65 @@ def req_1(data_structs, team, home):
     if home  == "away":
         x = "datos_away"
     nl =  lt.newList("ARRAY_LIST")
+    
     for i in y[x]["elements"]:
         lt.addLast(nl,i)
-    return merg.sort(nl,compare_dates_inter)
+    return merg.sort(nl,compare_dates_inter_mayor)
     
 
-def req_2(data_structs):
+def req_2(data_structs, name):
     """
     Función que soluciona el requerimiento 2
     """
     # TODO: Realizar el requerimiento 2
-    pass
+    players = data_structs["player"]
+    player  =  me.getValue(mp.get(players,name)) 
+    nl =  lt.newList("ARRAY_LIST")
+    for i in player["datos"]["elements"]:
+        lt.addLast(nl,i)
+    return merg.sort(nl,compare_dates_inter_menor)
 
-
-def req_3(data_structs):
+def req_3(data_structs,team,date_i,date_f):
     """
     Función que soluciona el requerimiento 3
     """
     # TODO: Realizar el requerimiento 3
-    pass
-
-
+    scorer =  data_structs["scorer"]
+    teams =  data_structs["team"]
+    y = me.getValue(mp.get(teams,team))
+    nl =  lt.newList("ARRAY_LIST")
+    first = time.strptime(date_i, "%Y-%m-%d")
+    second = time.strptime(date_f, "%Y-%m-%d")
+    nl = complement_req3("datos_home",first,second,scorer,y,nl)
+    nl = complement_req3("datos_away",first,second,scorer,y,nl)
+    o =  merg.sort(nl,compare_dates_inter_menor)
+    return o
+def complement_req3(pos,first,second,scorer,y,nl):
+    for i in y[pos]["elements"]:
+        date_actual =  time.strptime(i["date"], "%Y-%m-%d")
+        if date_actual > first and date_actual < second:
+            idunica =  i["date"]+ "-" + i["home_team"] + "-" + i["away_team"]
+            d = {}
+            d["date"] = i["date"]
+            d["home_score"] = i["home_score"]
+            d["away_score"] = i["away_score"]
+            d["home_team"] = i["home_team"]
+            d["away_team"] = i["away_team"]
+            d["country"] = i["country"]
+            d["city"] = i["city"]
+            d["tournament"] = i["tournament"]
+            d["penalty"] = "Unknown"
+            d["own_goal"] = "Unknown"
+            exitsscorer =  mp.contains(scorer,idunica)
+            if exitsscorer:
+                valores_scorer = me.getValue(mp.get(scorer,idunica))
+                lista1=(valores_scorer["datos"]["elements"])[0]
+                if lista1["penalty"] != "":
+                    d["penalty"] =  lista1["penalty"]
+                if lista1["own_goal"] != "":
+                    d["own_goal"] =  lista1["own_goal"]         
+            lt.addLast(nl,d)
+    return nl
 def req_4(data_structs):
     """
     Función que soluciona el requerimiento 4
@@ -229,20 +293,98 @@ def req_4(data_structs):
     pass
 
 
-def req_5(data_structs):
+def req_5(data_structs,name,date_i,date_f):
     """
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
-    pass
+    players = data_structs["player"]
+    results = data_structs["results"]
+    player  =  me.getValue(mp.get(players,name)) 
+    nl =  lt.newList("ARRAY_LIST")
+
+    first = time.strptime(date_i, "%Y-%m-%d")
+    second = time.strptime(date_f, "%Y-%m-%d")
+    for i in player["datos"]["elements"]:
+        date_actual =  time.strptime(i["date"], "%Y-%m-%d")
+        if date_actual > first and date_actual < second:
+            idunica =  str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"] )
+            d = {}
+            d["date"] = i["date"]
+            d["minute"] = i["minute"]
+            d["home_team"] = i["home_team"]
+            d["away_team"] = i["away_team"]
+            d["team"] = i["team"]  
+            d["home_score"] = ""
+            d["away_score"] = ""
+            d["tournament"] = ""
+            d["penalty"] = "Unknown"
+            d["own_goal"] = "Unknown"
+            if i["penalty"] != "":
+                d["penalty"] =  i["penalty"]
+            if i["own_goal"] != "":
+                d["own_goal"] =  i["own_goal"]  
+            exitsResults =  mp.contains(results,idunica)
+            if exitsResults:
+                valores_results = me.getValue(mp.get(results,idunica))
+                o =  valores_results
+                d["home_score"] = o["home_score"]
+                d["away_score"] = o["away_score"]
+                d["tournament"] = o["tournament"]
+            lt.addLast(nl,d)
+    return nl
+def new_Country_Player():
+    player = {
+        "datos" : None
+    }
+    player["datos"] =  lt.newList("ARRAY_LIST")
+
+    return player
 
 
-def req_6(data_structs):
+
+def req_6(data_structs,torneo ="FIFA World Cup qualification" ,anio ="2021"):
     """
     Función que soluciona el requerimiento 6
     """
+
     # TODO: Realizar el requerimiento 6
-    pass
+    torneos =  data_structs["tournaments"]
+    scorer = data_structs["scorer"]
+    team_names = data_structs["team_names"]
+    player_names = data_structs["player_names"]
+    torneom = me.getValue(mp.get(torneos,torneo))
+    d={}
+    map1 = mp.newMap()  
+    map1 = mp.newMap()  
+    d["teams"] =  map1
+    map1= d["teams"]
+    nl = lt.newList("ARRAY_LIST")
+    nl1 = lt.newList("ARRAY_LIST")
+    for i in torneom["datos"]["elements"]:
+       anioi = i["date"]
+       anioi = anioi[0:4]
+       if anio == anioi:
+            lt.addLast(nl,i)
+            idunica =  str(i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+            exitsResults =  mp.contains(scorer,idunica)
+            if exitsResults:
+                valores_results = me.getValue(mp.get(scorer,idunica))
+                pais2= valores_results["datos"]["elements"][0]
+                pais = pais2["team"]
+                existteam =  mp.contains(map1,pais)
+                if existteam:
+                    entry = mp.get(map1,pais)
+                    team = me.getValue(entry)
+                else:
+                    team = new_Country_Player()
+                    mp.put(map1,pais,team)
+                lt.addLast(team["datos"],pais2)
+    for i in lt.iterator(team_names):
+        pais = mp.get(map1,i)   
+
+
+    return nl
 
 
 def req_7(data_structs):
@@ -288,13 +430,20 @@ def sort_criteria(data_1, data_2):
     """
     #TODO: Crear función comparadora para ordenar
     pass
-
-def compare_dates_inter(data_1,  data_2):
+def compare_dates_inter_menor(data_1,  data_2):
     x = (data_1["date"])
     y = (data_2["date"])
     first = time.strptime(x, "%Y-%m-%d")
     second = time.strptime(y, "%Y-%m-%d")
     return first < second
+
+def compare_dates_inter_mayor(data_1,  data_2):
+    x = (data_1["date"])
+    y = (data_2["date"])
+    first = time.strptime(x, "%Y-%m-%d")
+    second = time.strptime(y, "%Y-%m-%d")
+    return first > second
+
 def sort(data_structs):
     """
     Función encargada de ordenar la lista con los datos

@@ -81,8 +81,8 @@ def load_data(control):
     print (mp.size(dato2))
 
 
-    o = controller.req_1(control,"Italy", "home")
-    print(tabulate(o["elements"], headers = "keys" , tablefmt='grid'))
+    o = controller.req_3(control,"Ali Daei","1999-03-25","2021-11-23")
+    print(o)
     
 
 

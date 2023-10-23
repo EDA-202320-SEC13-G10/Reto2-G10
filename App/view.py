@@ -73,12 +73,16 @@ def load_data(control):
     dato = control["model"]["results"]
     dato1 = control["model"]["scorer"]
     dato2 = control["model"]["shootouts"]
+    dato3 = control["model"]["tournaments"]
 
 
     print (mp.size(dato))
     print (mp.size(dato1))
     print (mp.size(dato2))
-    print (dato2)
+
+    z = me.getValue(mp.get(dato3,"UEFA Euro qualification"))
+
+    print(z)
 
 
 def print_data(control, id):
@@ -88,13 +92,14 @@ def print_data(control, id):
     #TODO: Realizar la función para imprimir un elemento
     pass
 
-def print_req_1(control):
+def print_req_1(control,team):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
-    pass
-
+    result = control["model"]["results"]
+    l = me.getValue( mp.get(result,team))
+    return l
 
 def print_req_2(control):
     """
@@ -170,7 +175,7 @@ if __name__ == "__main__":
             data = load_data(control)
             print(data)
         elif int(inputs) == 2:
-            print_req_1(control)
+            print_req_1(control,"Italy")
 
         elif int(inputs) == 3:
             print_req_2(control)

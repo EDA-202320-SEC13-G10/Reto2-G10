@@ -68,6 +68,17 @@ def new_data_structs():
     catalog["shootouts"] =  mp.newMap(17,
                             maptype="CHAINING",
                             loadfactor = 8)
+    
+    catalog["team"] = mp.newMap(80,
+                            maptype="CHAINING",
+                            loadfactor = 8)
+    catalog["player"] = mp.newMap(80,
+                            maptype="CHAINING",
+                            loadfactor = 8)
+    
+    catalog["tournaments"] = mp.newMap(80,
+                            maptype="CHAINING",
+                            loadfactor = 8)
     return  catalog
 # Funciones para agregar informacion al modelo
 
@@ -78,8 +89,9 @@ def add_data(data_structs, data):
     #TODO: Crear la función para agregar elementos a una lista
     pass
 
-def add_results(catalog, dato, idunica ):
+def add_results(catalog, dato, idunica):
     results = catalog["results"]
+    
     exitsResults =  mp.contains(results,idunica)
     if exitsResults == False:
         mp.put(results,idunica,dato)
@@ -98,13 +110,32 @@ def add_shootouts(catalog, dato, idunica ):
 
 # Funciones para creacion de datos
 
-def new_data(id, info):
-    """
-    Crea una nueva estructura para modelar los datos
-    """
-    #TODO: Crear la función para estructurar los datos
-    pass
-"""def new_Scorer():
+def new_Team():
+    team = {
+        "datos_home" : None,
+        "datos_away" : None
+    }
+    team["datos_home"] =  lt.newList("ARRAY_LIST")
+    team["datos_away"] =  lt.newList("ARRAY_LIST")
+
+    return team
+
+def addTeam(catalog,name,dato,estatus):
+    teams =  catalog["team"]
+    existteam =  mp.contains(teams,name)
+    if existteam:
+        entry = mp.get(teams,name)
+        team = me.getValue(entry)
+    else:
+        team = new_Team()
+        mp.put(teams,name,team)
+    if estatus == "home":
+        lt.addLast(team["datos_home"],dato)
+    else:
+        lt.addLast(team["datos_away"],dato)
+
+
+def new_Player():
     player = {
         "datos" : None
     }
@@ -112,16 +143,35 @@ def new_data(id, info):
 
     return player
 
-def addScorer(catalog,name,dato):
-    scorers =  catalog["scorer"]
-    existPlayer =  mp.contains(scorers,name)
+def addPlayer(catalog,name,dato):
+    Players =  catalog["player"]
+    existPlayer =  mp.contains(Players,name)
     if existPlayer:
-        entry = mp.get(scorers,name)
+        entry = mp.get(Players,name)
         player = me.getValue(entry)
     else:
-        player = new_Scorer()
-        mp.put(scorers,name,player)
-    lt.addLast(player["datos"],dato)"""
+        player = new_Player()
+        mp.put(Players,name,player)
+    lt.addLast(player["datos"],dato)
+
+def new_tournament():
+    tournaments = {
+        "datos" : None
+    }
+    tournaments["datos"] =  lt.newList("ARRAY_LIST")
+
+    return tournaments
+
+def addtournament(catalog,name,dato):
+    tournaments =  catalog["tournaments"]
+    existtournaments =  mp.contains(tournaments,name)
+    if existtournaments:
+        entry = mp.get(tournaments,name)
+        tournament = me.getValue(entry)
+    else:
+        tournament = new_tournament()
+        mp.put(tournaments,name,tournament)
+    lt.addLast(tournament["datos"],dato)
 
 def get_data(data_structs, id):
     """
@@ -210,7 +260,10 @@ def compare(data_1, data_2):
     Función encargada de comparar dos datos
     """
     #TODO: Crear función comparadora de la lista
-    pass
+    if data_1["info"]["date"] < data_2["info"]["date"]:
+        return 0
+    else:
+        return 1
 
 # Funciones de ordenamiento
 

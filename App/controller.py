@@ -83,16 +83,20 @@ def load_scorers(control):
     scorer_file  = cf.data_dir + 'football/goalscorers-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for r in input_file:
-        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
+        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"]+ "-" + r["minute"])
         model.add_scorer(control["model"],r,idunica)
+        model.addPlayer(control["model"],r["scorer"],r)
 
 
 def load_results(control):
     scorer_file  = cf.data_dir + 'football/results-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for r in input_file:
-        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
-        model.add_results(control["model"],r,idunica)
+        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"] )
+        model.add_results(control["model"],r,idunica) 
+        model.addTeam(control["model"],r["home_team"],r,"home")
+        model.addTeam(control["model"],r["away_team"],r,"away")
+        model.addtournament(control["model"],r["tournament"],r)
 
 def load_shootouts(control):
     scorer_file  = cf.data_dir + 'football/shootouts-utf8-small.csv'

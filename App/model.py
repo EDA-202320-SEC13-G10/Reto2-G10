@@ -37,7 +37,7 @@ from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 assert cf
 import time
-
+from tabulate import tabulate
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá
 dos listas, una para los videos, otra para las categorias de los mismos.
@@ -613,6 +613,10 @@ def req_7(data_structs, name, tamanio):
     t = me.getValue(mp.get(torneos, name))
     torneo = t["datos"]["elements"]
     golea = {}
+    matches = 0
+    penalties = 0
+    autogoals = 0  
+    goals = 0
     for i in torneo:
         idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"]+ "-" + r["minute"])
         goal = me.getValue(mp.get(scorers,idunica))
@@ -641,6 +645,88 @@ def req_7(data_structs, name, tamanio):
         # Goles en wins
         if goal["team"] == goal[""]:
             pass
+        idunica =  str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+        goals += int(i["home_score"]) + int(i["away_score"])
+        if mp.contains(scorers, idunica):
+            goal = me.getValue(mp.get(scorers,idunica))
+            goal = goal["datos"]["elements"]
+            matches += 1
+            for j in goal:
+                if not(j["scorer"]) in golea:
+                    golea[j["scorer"]] = {}
+                    golea[j["scorer"]]["total_points"] = 0
+                    golea[j["scorer"]]["total_goals"] = 0
+                    golea[j["scorer"]]["penalty_goals"] = 0
+                    golea[j["scorer"]]["own_goals"] = 0
+                    golea[j["scorer"]]["sum_time"] = 0
+                    golea[j["scorer"]]["avg_time [min]"] = 0
+                    golea[j["scorer"]]["scored_in_wins"] = 0
+                    golea[j["scorer"]]["scored_in_losses"] = 0
+                    golea[j["scorer"]]["scored_in_draws"] = 0
+                # Suma de goles, penalty, autogoles y puntos
+                golea[j["scorer"]]["total_goals"] += 1
+                if j["penalty"] == "True":
+                    golea[j["scorer"]]["penalty_goals"] += 1
+                    penalties += 1
+                if j["own_goal"] == "True":
+                    golea[j["scorer"]]["own_goals"] += 1
+                    autogoals += 1
+                golea[j["scorer"]]["total_points"] = golea[j["scorer"]]["total_goals"] + golea[j["scorer"]]["penalty_goals"] - golea[j["scorer"]]["own_goals"]
+                # Suma y promedio de minutos
+                golea[j["scorer"]]["sum_time"] += float(j["minute"])
+                golea[j["scorer"]]["avg_time [min]"] = golea[j["scorer"]]["sum_time"]/golea[j["scorer"]]["total_goals"]
+                # Goles en wins
+                if j["team"] == j["home_team"] and i["home_score"] > i["away_score"]:
+                    golea[j["scorer"]]["scored_in_wins"] +=1
+                if j["team"] == j["away_team"] and i["home_score"] < i["away_score"]:
+                    golea[j["scorer"]]["scored_in_wins"] +=1
+                # Goles en draws
+                if j["team"] == j["home_team"] and i["home_score"] == i["away_score"]:
+                    golea[j["scorer"]]["scored_in_draws"] +=1
+                if j["team"] == j["away_team"] and i["home_score"] == i["away_score"]:
+                    golea[j["scorer"]]["scored_in_draws"] +=1
+                # Goles en losses
+                if j["team"] == j["home_team"] and i["home_score"] < i["away_score"]:
+                    golea[j["scorer"]]["scored_in_losses"] +=1
+                if j["team"] == j["away_team"] and i["home_score"] > i["away_score"]:
+                    golea[j["scorer"]]["scored_in_losses"] +=1
+                # Ultimo gol
+                golea[j["scorer"]]["last_goal"] = {"date": j["date"], "home_team": j["home_team"], "away_team": j["away_team"], "home_score": i["home_score"], "away_score": i["away_score"], "minute": j["minute"], "penalty": j["penalty"], "own_goal": j["own_goal"]}
+    goleadores = list(golea.keys())
+    players = len(goleadores)
+    valores = list(golea.values())
+    npuntos = lt.newList("ARRAY_LIST")
+    withnpuntos = 0
+    for i in range(len(goleadores)):
+        x = {}
+        # Filtrar los de N puntos
+        if valores[i]["total_points"] == tamanio:
+            x["scorer"] = goleadores[i]
+            x["total_points"] = valores[i]["total_points"]
+            x["total_goals"] = valores[i]["total_goals"]
+            x["penalty_goals"] = valores[i]["penalty_goals"]
+            x["own_goals"] = valores[i]["own_goals"]
+            x["avg_time [min]"] = valores[i]["avg_time [min]"]
+            x["scored_in_wins"] = valores[i]["scored_in_wins"]
+            x["scored_in_losses"] = valores[i]["scored_in_losses"]
+            x["scored_in_draws"] = valores[i]["scored_in_draws"]
+            lg = lt.newList("ARRAY_LIST")
+            lt.addLast(lg, valores[i]["last_goal"])
+            x["last_goal"] = tabulate(lg["elements"], headers = "keys" , tablefmt='grid')
+            lt.addLast(npuntos, x)
+            withnpuntos += 1
+    map7 = mp.newMap()
+    mp.put(map7, "values", npuntos)
+    mp.put(map7, "players", players)
+    mp.put(map7, "goals", goals)
+    mp.put(map7, "tournaments", cant_torn)
+    mp.put(map7, "penalties", penalties)
+    mp.put(map7, "autogoals", autogoals)
+    mp.put(map7, "matches", matches)
+    mp.put(map7, "n-points", withnpuntos)
+    return map7
+        
+
 def req_8(data_structs):
     """
     Función que soluciona el requerimiento 8

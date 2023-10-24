@@ -155,12 +155,20 @@ def print_req_6(control):
     pass
 
 
-def print_req_7(control):
+def print_req_7(control, name, tamanio):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    map7 = controller.req_7(control, name, tamanio)
+    print(me.getValue(mp.get(map7,"tournaments")))
+    print(me.getValue(mp.get(map7,"players")))
+    print(me.getValue(mp.get(map7,"matches")))
+    print(me.getValue(mp.get(map7,"goals")))
+    print(me.getValue(mp.get(map7,"penalties")))
+    print(me.getValue(mp.get(map7,"autogoals")))
+    print(me.getValue(mp.get(map7,"n-points")))
+    print(tabulate(me.getValue(mp.get(map7,"values"))["elements"], headers = "keys" , tablefmt='grid'))
 
 
 def print_req_8(control):
@@ -207,7 +215,7 @@ if __name__ == "__main__":
             print_req_6(control)
 
         elif int(inputs) == 8:
-            print_req_7(control)
+            print_req_7(control, "UEFA Euro qualification", 2)
 
         elif int(inputs) == 9:
             print_req_8(control)

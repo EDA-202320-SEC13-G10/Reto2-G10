@@ -163,12 +163,12 @@ def req_2(control,name):
     return model.req_2(control["model"],name)
 
 
-def req_3(control,team,date_i,date_f):
+def req_3(control, team, date_i, date_f):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    return model.req_6(control["model"])
+    return model.req_3(control["model"], team, date_i, date_f)
 
 
 
@@ -197,12 +197,12 @@ def req_6(control):
     pass
 
 
-def req_7(control):
+def req_7(control, name, tamanio):
     """
     Retorna el resultado del requerimiento 7
     """
     # TODO: Modificar el requerimiento 7
-    pass
+    return model.req_7(control, name, tamanio)
 
 
 def req_8(control):

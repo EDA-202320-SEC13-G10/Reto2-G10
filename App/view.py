@@ -92,8 +92,9 @@ def print_req_1(control):
     tipolocal =  input("Team condition: ")
 
     print("Req No. 1 Results".center(130,"="))
-    l1,l2, l3=controller.req_1(control,team_name,tipolocal,n)
-    print(("Total matches found "+ str(l3)).center(100))
+    l1,l2, l3 , j=controller.req_1(control,team_name,tipolocal,n)
+    print(("Total matches found as "+ tipolocal +  " "+str(l3)).center(100))
+    print(("Total matches for "+ team_name + " "+ str(j)).center(100))
     print(("Selecting "+ str(l2) + " matches...").center(100))
     if l3 > 6:
         print("Resultrs struct has more than 6 records...")

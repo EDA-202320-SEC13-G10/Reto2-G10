@@ -140,7 +140,7 @@ def req_1(control,team, home,n):
     # TODO: Modificar el requerimiento 
     
   
-    rq1model = model.req_1(control["model"],team, home)
+    rq1model, j = model.req_1(control["model"],team, home)
 
     size= model.data_sizel(rq1model)
     size_i = size
@@ -150,7 +150,7 @@ def req_1(control,team, home,n):
     
     if size > 6:
         rq1model =  model.first_last3(rq1model)
-    return  rq1model, size ,size_i
+    return  rq1model, size ,size_i , j
 
    
 

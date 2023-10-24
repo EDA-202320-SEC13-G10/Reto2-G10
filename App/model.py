@@ -250,7 +250,8 @@ def req_1(data_structs, team, home):
     
     for i in y[x]["elements"]:
         lt.addLast(nl,i)
-    return merg.sort(nl,compare_dates_inter_mayor)
+    j = len(y["datos_home"]["elements"])+  len(y["datos_away"]["elements"])
+    return merg.sort(nl,compare_dates_inter_mayor), j
     
 
 def req_2(data_structs, name):

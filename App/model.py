@@ -366,6 +366,9 @@ def req_5(data_structs, name, fecha_ini, fecha_fin):
     """
     # TODO: Realizar el requerimiento 5
     pass
+
+
+
 def new_Country_Player():
     team_country = {
         "datos" : None

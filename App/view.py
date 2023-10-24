@@ -70,20 +70,7 @@ def load_data(control):
 
     controller.load_data(control)
 
-    dato = control["model"]["results"]
-    dato1 = control["model"]["scorer"]
-    dato2 = control["model"]["shootouts"]
-    dato3 = control["model"]["team"]
 
-
-    print (mp.size(dato))
-    print (mp.size(dato1))
-    print (mp.size(dato2))
-
-
-    o = controller.req_3(control,"Ali Daei","1999-03-25","2021-11-23")
-    print(o)
-    
 
 
 def print_data(control, id):
@@ -93,14 +80,28 @@ def print_data(control, id):
     #TODO: Realizar la función para imprimir un elemento
     pass
 
-def print_req_1(control,team):
+def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
-    result = control["model"]["results"]
-    l = me.getValue( mp.get(result,team))
-    return l
+    print("Req No. 1 Input".center(130,"="))
+
+    n =  int(input("Number of matches: "))
+    team_name =  input("Team name: ")
+    tipolocal =  input("Team condition: ")
+
+    print("Req No. 1 Results".center(130,"="))
+    l1,l2, l3=controller.req_1(control,team_name,tipolocal,n)
+    print(("Total matches found "+ str(l3)).center(100))
+    print(("Selecting "+ str(l2) + " matches...").center(100))
+    if l3 > 6:
+        print("Resultrs struct has more than 6 records...")
+    else:
+        print("Resultrs struct has less than 6 records...")
+    print(tabulate(l1["elements"], headers = "keys" , tablefmt='grid'))
+    print(l2)
+  
 
 def print_req_2(control):
     """
@@ -188,7 +189,7 @@ if __name__ == "__main__":
             data = load_data(control)
             print(data)
         elif int(inputs) == 2:
-            print_req_1(control,"Italy")
+            print_req_1(control)
 
         elif int(inputs) == 3:
             print_req_2(control)

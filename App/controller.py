@@ -125,14 +125,34 @@ def get_data(control, id):
     """
     #TODO: Llamar la función del modelo para obtener un dato
     pass
+def sizedtos(control,posi):
+    pos = control["model"]
+    return model.data_size(pos[posi])
 
+def primeros_ultimos(control):
+    return model.first_last3(control) 
 
-def req_1(control,team, home):
+def req_1(control,team, home,n):
     """
     Retorna el resultado del requerimiento 1
     """
-    # TODO: Modificar el requerimiento 1
-    return model.req_1(control["model"],team, home)
+
+    # TODO: Modificar el requerimiento 
+    
+  
+    rq1model = model.req_1(control["model"],team, home)
+
+    size= model.data_sizel(rq1model)
+    size_i = size
+    if size > n:
+        size = n
+        rq1model =  model.sublista(rq1model,1,size)
+    
+    if size > 6:
+        rq1model =  model.first_last3(rq1model)
+    return  rq1model, size ,size_i
+
+   
 
 
 def req_2(control,name):

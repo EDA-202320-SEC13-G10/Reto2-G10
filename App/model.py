@@ -88,6 +88,23 @@ def new_data_structs():
                             
     return  catalog
 # Funciones para agregar informacion al modelo
+def data_sizel(data_structs):
+    """
+    Retorna el tamaño de la lista de datos
+    """
+    return lt.size(data_structs) 
+def sublista(data_structs, pos_i, num):
+    s =  lt.subList(data_structs, pos_i, num)
+    return s
+
+
+
+def first_last3(data_structs):
+    primeros = sublista(data_structs,1,3)
+    ultimos = sublista(data_structs,data_sizel(data_structs)-2,3)
+    for i in lt.iterator(ultimos):
+        lt.addLast(primeros,i)
+    return primeros
 
 def add_data(data_structs, data):
     """
@@ -347,69 +364,44 @@ def req_5(data_structs, name, fecha_ini, fecha_fin):
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
-    scorers = data_structs["model"]["player"]
-    results = data_structs["model"]["results"]
-    fecha_inicio = time.strptime(fecha_ini, "%Y-%m-%d")
-    fecha_final = time.strptime(fecha_fin, "%Y-%m-%d")
-    players = mp.keySet(scorers)["size"]
-    s = me.getValue(mp.get(scorers, name))
-    scorer = s["datos"]["elements"]
-    goals = 0
-    tournaments = []
-    penalties = 0
-    autogoals = 0
-    nl = lt.newList("ARRAY_LIST")
-    for i in scorer:
-        fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
-        if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
-            x = {}
-            goals += 1
-            x["date"] = i["date"]
-            x["minute"] = i["minute"]
-            x["home_team"] = i["home_team"]
-            x["away_team"] = i["away_team"]
-            x["team"] = i["team"]
-            idunica = str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
-            result = me.getValue(mp.get(results,idunica))
-            x["home_score"] = result["home_score"]
-            x["away_score"] = result["away_score"]
-            x["tournament"] = result["tournament"]
-            x["penalty"] = i["penalty"]
-            if i["penalty"] == "True":
-                penalties +=1
-            x["own_goal"] = i["own_goal"]
-            if i["own_goal"] == "True":
-                autogoals +=1
-            if not(result["tournament"]) in tournaments:
-                tournaments.append(result["tournament"])
-            lt.addLast(nl, x)
-    map5 = mp.newMap()
-    mp.put(map5, "values", nl)
-    mp.put(map5, "players", players)
-    mp.put(map5, "goals", goals)
-    mp.put(map5, "tournaments", len(tournaments))
-    mp.put(map5, "penalties", penalties)
-    mp.put(map5, "autogoals", autogoals)
-    return map5
+    pass
+def new_Country_Player():
+    team_country = {
+        "datos" : None
+    }
+    team_country["datos"] =  lt.newList("ARRAY_LIST")
+    team_country["jugadores"] =  lt.newList("ARRAY_LIST")
+    team_country["results"] =  lt.newList("ARRAY_LIST")
 
+    return team_country
 
+def new_bests_Player():
+    team_country = {
+        "jugadores" : None
+    }
 
+    team_country["jugadores"] =  lt.newList("ARRAY_LIST")
 
+    return team_country
 
-def req_6(data_structs):
+def req_6(data_structs, torneo = "FIFA World Cup qualification", anio = "2021"):
     """
     Función que soluciona el requerimiento 6
     """
-
+    
     # TODO: Realizar el requerimiento 6
     torneos =  data_structs["tournaments"]
     scorer = data_structs["scorer"]
-    team_names = data_structs["team_names"]
+    results = data_structs["results"]
+    teams = data_structs["team"]
+    team_names = data_structs["teams_names"]
     player_names = data_structs["player_names"]
     torneom = me.getValue(mp.get(torneos,torneo))
     d={}
     map1 = mp.newMap()  
-    map1 = mp.newMap()  
+    map2 = mp.newMap()  
+    map3 = mp.newMap()  
+    map4 = mp.newMap()  
     d["teams"] =  map1
     map1= d["teams"]
     nl = lt.newList("ARRAY_LIST")
@@ -420,24 +412,193 @@ def req_6(data_structs):
        if anio == anioi:
             lt.addLast(nl,i)
             idunica =  str(i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+        
             exitsResults =  mp.contains(scorer,idunica)
-            if exitsResults:
-                valores_results = me.getValue(mp.get(scorer,idunica))
-                pais2= valores_results["datos"]["elements"][0]
-                pais = pais2["team"]
-                existteam =  mp.contains(map1,pais)
-                if existteam:
+            exitsresults =  mp.contains(results,idunica)
+            if exitsresults:
+                valores_results = me.getValue(mp.get(results,idunica))
+                datos1= valores_results
+                pais =datos1["home_team"]
+                existteam1 =  mp.contains(map1,pais)
+                if existteam1:
                     entry = mp.get(map1,pais)
                     team = me.getValue(entry)
                 else:
                     team = new_Country_Player()
                     mp.put(map1,pais,team)
-                lt.addLast(team["datos"],pais2)
+                lt.addLast(team["results"],datos1)
+                pais =datos1["away_team"]
+                existteam1 =  mp.contains(map1,pais)
+                if existteam1:
+                    entry = mp.get(map1,pais)
+                    team = me.getValue(entry)
+                else:
+                    team = new_Country_Player()
+                    mp.put(map1,pais,team)
+                lt.addLast(team["results"],datos1)
+            if exitsResults:
+                valores_results = me.getValue(mp.get(scorer,idunica))
+                pais2= valores_results["datos"]["elements"]
+                for h in pais2:
+                    pais = h["team"]
+                    nombre = h["scorer"]
+                    existteam =  mp.contains(map1,pais)
+                    if existteam:
+                        entry = mp.get(map1,pais)
+                        team = me.getValue(entry)
+                    else:
+                        team = new_Country_Player()
+                        mp.put(map1,pais,team)
+                    lt.addLast(team["datos"],h)
+                    lt.addLast(team["jugadores"],nombre)
+    
     for i in lt.iterator(team_names):
-        pais = mp.get(map1,i)   
+        exitsi =  mp.contains(map1,i)
+        if exitsi:
+            nj =  lt.newList("ARRAY_LIST")
+            pais_datos  = me.getValue(mp.get(map1,i))
+            datos  = pais_datos["datos"]["elements"]
+            jugadores  = pais_datos["jugadores"]["elements"]
+            r  = pais_datos["results"]["elements"]
+            dr =  {}
+            for results in r:
+                if dr == {}:
+                    dr["team"] = ""
+                    dr["total_points"] = 0
+                    dr["goal_difference"] = 0
+                    dr["penalty_points"] = 0
+                    dr["matches"] = 0
+                    dr["own_goals_points"] = 0
+                    dr["wins"] = 0
+                    dr["draws"] = 0
+                    dr["losses"] = 0
+                    dr["goals_for"] = 0
+                    dr["goals_against"] = 0
+                    dr["top_scorer"] = {}
+                    if results["home_team"] == i:
+                        dr["team"] = results["home_team"]
+                        dr["matches"] =  int(dr["matches"]) + 1
 
+                        if int(results["home_score"]) > int(results["away_score"]):
+                            dr["total_points"] =  int(dr["total_points"]) + 3
+                            dr["wins"] =  int(dr["wins"]) + 1
+                        if int(results["home_score"]) == int(results["away_score"]):
+                            dr["total_points"] =  int(dr["total_points"]) + 1
+                            dr["draws"] =  int(dr["draws"]) + 1
+                        else:
+                            dr["losses"] =  int(dr["losses"]) + 1
+                        dr["goals_for"] = int( dr["goals_for"] ) + int(results["home_score"])
+                        dr["goals_against"] = int( dr["goals_against"] ) + int(results["away_score"])
+                        dr["goal_difference"] =  int(dr["goal_difference"]) + (int(results["home_score"]) - int(results["away_score"]))
+                        dr["goals_for"] =  dr["goals_for"] + int(results["home_score"])
+                        idunica1 =  str(results["date"]+ "-" + results["home_team"] + "-" + results["away_team"])
 
-    return nl
+                        exitsResults =  mp.contains(scorer,idunica1)
+                        if exitsResults:
+                            valores_results = me.getValue(mp.get(scorer,idunica1))
+                            pais2= valores_results["datos"]["elements"]
+                            for h in pais2:
+                                pais = h["team"]
+                                if pais == i:
+                                    if h["penalty"] == "True":
+                                        dr["penalty_points"] = int(dr["penalty_points"]) + 1
+                                    if h["own_goal"] == "True":
+                                        dr["own_goals_points"] = int(dr["own_goals_points"]) + 1
+                    if results["away_team"] == i:
+                        dr["matches"] =  int(dr["matches"]) + 1
+                        dr["team"] = results["away_team"]
+                        if int(results["away_score"]) > int(results["home_score"]):
+                            dr["total_points"] =  int(dr["total_points"]) + 3
+                            dr["wins"] =  int(dr["wins"]) + 1
+                        if int(results["away_score"]) == int(results["home_score"]):
+                            dr["total_points"] =  int(dr["total_points"]) + 1
+                            dr["draws"] =  int(dr["draws"]) + 1
+                        else:
+                            dr["losses"] =  int(dr["losses"]) + 1
+                        dr["goals_for"] = int( dr["goals_for"] ) + int(results["away_score"])
+                        dr["goals_against"] = int( dr["goals_against"] ) + int(results["home_score"])
+                        dr["goal_difference"] =  int(dr["goal_difference"]) + (int(results["away_score"]) - int(results["home_score"]))
+                        dr["goals_for"] =  dr["goals_for"] + int(results["away_score"])
+                        idunica1 =  str(results["date"]+ "-" + results["home_team"] + "-" + results["away_team"])
+
+                        exitsResults =  mp.contains(scorer,idunica1)
+                        
+                        if exitsResults:
+                            valores_results = me.getValue(mp.get(scorer,idunica1))
+                            pais2= valores_results["datos"]["elements"]
+                            for h in pais2:
+                                pais = h["team"]
+                                if pais == i:
+                                    if h["penalty"] == "True":
+                                        dr["penalty_points"] = int(dr["penalty_points"]) + 1
+                                    if h["own_goal"] == "True":
+                                        dr["own_goals_points"] = int(dr["own_goals_points"]) + 1
+            mp.put(map4,i,dr)
+                
+            for j in jugadores:      
+                d  = {}
+                d["scorer"] =  j
+                d["goals"] = 0
+                d["matches"] = 0
+                d["avg_time"] = 0
+                d["minute"] = 0
+                for z in datos:
+                    if z["scorer"] == j:        
+                        exits_jugadormayor = mp.contains(map3,j)
+                        if exits_jugadormayor:
+                            jugador_map =  me.getValue(mp.get(map3,j))
+                            if jugador_map["penalty"] != "True":
+                                d["goals"] = int(jugador_map["goals"]) + 1
+                            d["matches"] = int(jugador_map["matches"]) + 1
+                            d["minute"] = int(jugador_map["minute"]) + int(jugador_map["minute"])
+                            d["avg_time"] = float(d["minute"])/float(d["matches"])
+                        else:
+
+                            if z["penalty"] != "True":
+                                d["goals"] =  1
+                            d["matches"] =  1
+                            d["minute"] = float(z["minute"])
+                            d["avg_time"] = float(d["minute"])/float(d["matches"])    
+                lt.addLast(nj,d)       
+            mp.put(map3,i,nj)
+        exits0 =  mp.contains(map3,i)
+        if exits0: 
+            determinar_mayor =  me.getValue(mp.get(map3,i))
+            d  = {}
+            d["scorer"] = ""
+            d["goals"] = 0
+            d["matches"] = 0
+            d["avg_time"] = 0
+            d["minute"] = 0 
+            for p in determinar_mayor["elements"]:
+                if d == {}:
+                    d = p
+                if d["goals"] < p["goals"]:
+                    d = p
+                    if d["matches"] > p["matches"]:
+                        d = p
+            mp.put(map2,i,d)
+        exitsmap4 = mp.contains(map4,i)
+        if exitsmap4:
+            
+
+            valuemap = me.getValue(mp.get(map4,i))
+
+            dicfinal = valuemap
+            dicfinal["top_scorer"] = {}
+            dicfinal["top_scorer"]["scorer"] = "Unavailable"
+            dicfinal["top_scorer"]["goals"] = 0
+            dicfinal["top_scorer"]["matches"] = 0
+            dicfinal["top_scorer"]["avg_time"] = 0
+            dicfinal["top_scorer"]["minute"] = 0 
+            exitsmap2 = mp.contains(map2,i)
+            if exitsmap2:
+                valueplayer = me.getValue(mp.get(map2,i))
+                dicfinal["top_scorer"] = valueplayer
+            lt.addLast(nl1,valuemap)
+  
+        
+    return nl1
 
 
 def req_7(data_structs, name, tamanio):
@@ -478,8 +639,8 @@ def req_7(data_structs, name, tamanio):
         golea[goal["scorer"]]["sum_time"] += goal["minute"]
         golea[goal["scorer"]]["avg_time [min]"] = golea[goal["scorer"]]["sum_time"]/golea[goal["scorer"]]["total_goals"]
         # Goles en wins
-        if goal["team"] == goal[""]
-
+        if goal["team"] == goal[""]:
+            pass
 def req_8(data_structs):
     """
     Función que soluciona el requerimiento 8

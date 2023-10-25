@@ -83,16 +83,19 @@ def load_scorers(control):
     scorer_file  = cf.data_dir + 'football/goalscorers-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for r in input_file:
+        model.adlista(control,"scorer1",r)
         idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
         model.add_scorer(control["model"],r,idunica)
         model.addPlayer(control["model"],r["scorer"],r)
         model.add_player_names(control["model"]["player_names"],r["scorer"])
+    control["model"]["scorer1"] = model.sortLista(control["model"]["scorer1"])
 
 
 def load_results(control):
     scorer_file  = cf.data_dir + 'football/results-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for r in input_file:
+        model.adlista(control,"results1",r)
         idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"] )
         model.add_results(control["model"],r,idunica) 
         model.addTeam(control["model"],r["home_team"],r,"home")
@@ -100,13 +103,18 @@ def load_results(control):
         model.addtournament(control["model"],r["tournament"],r)
         model.add_team_names(control["model"]["teams_names"],r["home_team"])
         model.add_team_names(control["model"]["teams_names"],r["away_team"])
+    control["model"]["results1"] = model.sortLista(control["model"]["results1"])
+    
         
 def load_shootouts(control):
     scorer_file  = cf.data_dir + 'football/shootouts-utf8-small.csv'
     input_file = csv.DictReader(open(scorer_file, encoding='utf-8'))
     for r in input_file:
+        model.adlista(control,"shootouts1",r)
         idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"])
         model.add_shootouts(control["model"],r,idunica)        
+    control["model"]["shootouts1"] = model.sortLista(control["model"]["shootouts1"])
+    
 # Funciones de ordenamiento
 
 def sort(control):
@@ -128,6 +136,9 @@ def get_data(control, id):
 def sizedtos(control,posi):
     pos = control["model"]
     return model.data_size(pos[posi])
+
+def sizedtosl(control):
+    return model.data_sizel(control)
 
 def primeros_ultimos(control):
     return model.first_last3(control) 
@@ -155,20 +166,40 @@ def req_1(control,team, home,n):
    
 
 
-def req_2(control,name):
+def req_2(control,name,n):
     """
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    return model.req_2(control["model"],name)
+    rq2model = model.req_2(control["model"],name)
+
+    size= model.data_sizel(rq2model)
+    size_i = size
+    if size > n:
+        size = n
+        rq2model =  model.sublista(rq2model,1,size)
+    
+    if size > 6:
+        rq1model =  model.first_last3(rq1model)
+    return  rq2model, size ,size_i
 
 
 def req_3(control, team, date_i, date_f):
     """
     Retorna el resultado del requerimiento 3
     """
+    # TODO: Modificar el reqtart = get_time()
+    dtos =  model.req_3(control,date_i, date_f , team)
     # TODO: Modificar el requerimiento 3
-    return model.req_3(control["model"], team, date_i, date_f)
+    size= model.data_sizel(dtos)
+    size_i = size
+    if size < 6:
+        dtos =  dtos
+    else:
+        dtos =  model.first_last3(dtos)
+
+         
+    return dtos
 
 
 

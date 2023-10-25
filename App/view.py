@@ -210,8 +210,18 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    print("Req No. 6 Input".center(130,"="))
 
+    n =  int(input("TOP N equipos: "))
+    torneo=  input("Torneo: ")
+    anio =  input("Año: ")
+    l1, l2, l3 = controller.req_6(control,torneo,anio,n)
+    print(("Selecting "+ str(l2) + " matches...").center(100))
+    if l3 > 6:
+        print("Resultrs struct has more than 6 records...")
+    else:
+        print("Resultrs struct has less than 6 records...")
+    print(tabulate(l1["elements"], headers = "keys", tablefmt='grid'))
 
 def print_req_7(control, name, tamanio):
     """
@@ -254,10 +264,10 @@ if __name__ == "__main__":
             print("Cargando información de los archivos ....\n")
             load_data(control)
         elif int(inputs) == 2:
-            print_req_1(control, "15" "Italy", "home")
+            print_req_1(control)
 
         elif int(inputs) == 3:
-            print_req_2(control, "7", "Michael Ballack")
+            print_req_2(control)
 
         elif int(inputs) == 4:
             print_req_3(control, "Italy", "1939-01-01", "2018-12-31")

@@ -213,13 +213,22 @@ def req_5(control, name, fecha_ini, fecha_fin):
     map5 = model.req_5(control, name, fecha_ini, fecha_fin)
     return map5
 
-def req_6(control):
+def req_6(control, torneo,anio,n):
     """
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    pass
+    rq6model = model.req_6(control, torneo, anio)
 
+    size= model.data_sizel(rq6model)
+    size_i = size
+    if size > n:
+        size = n
+        rq6model =  model.sublista(rq6model,1,size)
+    
+    if size > 6:
+        rq6model =  model.first_last3(rq6model)
+    return  rq6model, size ,size_i
 
 def req_7(control, name, tamanio):
     """

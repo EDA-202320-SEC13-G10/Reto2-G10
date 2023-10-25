@@ -266,48 +266,90 @@ def req_2(data_structs, name):
         lt.addLast(nl,i)
     return merg.sort(nl,compare_dates_inter_menor)
 
-def req_3(data_structs,team,date_i,date_f):
+def req_3(data_structs, team, date_i, date_f):
     """
     Función que soluciona el requerimiento 3
     """
     # TODO: Realizar el requerimiento 3
-    scorer =  data_structs["scorer"]
-    teams =  data_structs["team"]
-    y = me.getValue(mp.get(teams,team))
-    nl =  lt.newList("ARRAY_LIST")
-    first = time.strptime(date_i, "%Y-%m-%d")
-    second = time.strptime(date_f, "%Y-%m-%d")
-    nl = complement_req3("datos_home",first,second,scorer,y,nl)
-    nl = complement_req3("datos_away",first,second,scorer,y,nl)
-    o =  merg.sort(nl,compare_dates_inter_menor)
-    return o
-def complement_req3(pos,first,second,scorer,y,nl):
-    for i in y[pos]["elements"]:
-        date_actual =  time.strptime(i["date"], "%Y-%m-%d")
-        if date_actual > first and date_actual < second:
-            idunica =  i["date"]+ "-" + i["home_team"] + "-" + i["away_team"]
-            d = {}
-            d["date"] = i["date"]
-            d["home_score"] = i["home_score"]
-            d["away_score"] = i["away_score"]
-            d["home_team"] = i["home_team"]
-            d["away_team"] = i["away_team"]
-            d["country"] = i["country"]
-            d["city"] = i["city"]
-            d["tournament"] = i["tournament"]
-            d["penalty"] = "Unknown"
-            d["own_goal"] = "Unknown"
-            exitsscorer =  mp.contains(scorer,idunica)
-            if exitsscorer:
-                valores_scorer = me.getValue(mp.get(scorer,idunica))
-                lista1=(valores_scorer["datos"]["elements"])[0]
-                if lista1["penalty"] != "":
-                    d["penalty"] =  lista1["penalty"]
-                if lista1["own_goal"] != "":
-                    d["own_goal"] =  lista1["own_goal"]         
-            lt.addLast(nl,d)
-    return nl
-def req_4(data_structs):
+    teams = data_structs["team"]
+    scorers = data_structs["scorer"]
+    cant_teams = mp.keySet(teams)["size"]
+    fecha_inicio = time.strptime(date_i, "%Y-%m-%d")
+    fecha_final = time.strptime(date_f, "%Y-%m-%d")
+    e = me.getValue(mp.get(teams,team))
+    equipo_l = e["datos_home"]["elements"]
+    equipo_v = e["datos_away"]["elements"]
+    h_matches = 0
+    t_matches = 0
+    a_matches = 0
+    nl = lt.newList("ARRAY_LIST")
+    for i in equipo_l:
+        fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
+        if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
+            h_matches += 1
+            t_matches += 1
+            x = {}
+            x["date"] = i["date"]
+            x["home_score"] = i["home_score"]
+            x["away_score"] = i["away_score"]
+            x["home_team"] = i["home_team"]
+            x["away_team"] = i["away_team"]
+            x["country"] = i["country"]
+            x["city"] = i["city"]
+            x["tournament"] = i["tournament"]
+            x["penalty"] = "Unknown"
+            x["own_goal"] = "Unknown"
+            idunica =  str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+            if mp.contains(scorers, idunica):
+                goal = me.getValue(mp.get(scorers,idunica))
+                goal = goal["datos"]["elements"]
+                x["penalty"] = "False"
+                x["own_goal"] = "False"
+                for j in goal:
+                    if j["penalty"] == "True":
+                        x["penalty"] = "True"
+                    if j["own_goal"] == "True":
+                        x["own_goal"] = "True"
+            lt.addLast(nl, x)
+    for i in equipo_v:
+        fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
+        if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
+            a_matches += 1
+            t_matches += 1
+            x = {}
+            x["date"] = i["date"]
+            x["home_score"] = i["home_score"]
+            x["away_score"] = i["away_score"]
+            x["home_team"] = i["home_team"]
+            x["away_team"] = i["away_team"]
+            x["country"] = i["country"]
+            x["city"] = i["city"]
+            x["tournament"] = i["tournament"]
+            x["penalty"] = "Unknown"
+            x["own_goal"] = "Unknown"
+            idunica =  str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+            if mp.contains(scorers, idunica):
+                goal = me.getValue(mp.get(scorers,idunica))
+                goal = goal["datos"]["elements"]
+                x["penalty"] = "False"
+                x["own_goal"] = "False"
+                for j in goal:
+                    if j["penalty"] == "True":
+                        x["penalty"] = "True"
+                    if j["own_goal"] == "True":
+                        x["own_goal"] = "True"
+            lt.addLast(nl, x)
+    map3 = mp.newMap()
+    mp.put(map3, "values", nl)
+    mp.put(map3, "teams", cant_teams)
+    mp.put(map3, "matches", t_matches)
+    mp.put(map3, "home_matches", h_matches)
+    mp.put(map3, "away_matches", a_matches)
+    return map3
+    
+        
+    
+def req_4(data_structs, name, fecha_ini, fecha_fin):
     """
     Función que soluciona el requerimiento 4
     """
@@ -365,7 +407,50 @@ def req_5(data_structs, name, fecha_ini, fecha_fin):
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
-    pass
+    scorers = data_structs["model"]["player"]
+    results = data_structs["model"]["results"]
+    fecha_inicio = time.strptime(fecha_ini, "%Y-%m-%d")
+    fecha_final = time.strptime(fecha_fin, "%Y-%m-%d")
+    players = mp.keySet(scorers)["size"]
+    s = me.getValue(mp.get(scorers, name))
+    scorer = s["datos"]["elements"]
+    goals = 0
+    tournaments = []
+    penalties = 0
+    autogoals = 0
+    nl = lt.newList("ARRAY_LIST")
+    for i in scorer:
+        fecha_actual = time.strptime(i["date"], "%Y-%m-%d")
+        if fecha_actual > fecha_inicio and fecha_actual < fecha_final:
+            x = {}
+            goals += 1
+            x["date"] = i["date"]
+            x["minute"] = i["minute"]
+            x["home_team"] = i["home_team"]
+            x["away_team"] = i["away_team"]
+            x["team"] = i["team"]
+            idunica = str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
+            result = me.getValue(mp.get(results,idunica))
+            x["home_score"] = result["home_score"]
+            x["away_score"] = result["away_score"]
+            x["tournament"] = result["tournament"]
+            x["penalty"] = i["penalty"]
+            if i["penalty"] == "True":
+                penalties +=1
+            x["own_goal"] = i["own_goal"]
+            if i["own_goal"] == "True":
+                autogoals +=1
+            if not(result["tournament"]) in tournaments:
+                tournaments.append(result["tournament"])
+            lt.addLast(nl, x)
+    map5 = mp.newMap()
+    mp.put(map5, "values", nl)
+    mp.put(map5, "players", players)
+    mp.put(map5, "goals", goals)
+    mp.put(map5, "tournaments", len(tournaments))
+    mp.put(map5, "penalties", penalties)
+    mp.put(map5, "autogoals", autogoals)
+    return map5
 
 
 
@@ -610,7 +695,6 @@ def req_7(data_structs, name, tamanio):
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
-    # Revisar, ya que estoy bugeado
     torneos = data_structs["model"]["tournaments"]
     scorers = data_structs["model"]["scorer"]
     cant_torn = mp.keySet(torneos)["size"]
@@ -622,33 +706,6 @@ def req_7(data_structs, name, tamanio):
     autogoals = 0  
     goals = 0
     for i in torneo:
-        idunica =  str( r["date"]+ "-" + r["home_team"] + "-" + r["away_team"]+ "-" + r["minute"])
-        goal = me.getValue(mp.get(scorers,idunica))
-        if not(goal["scorer"]) in golea:
-            golea[goal["scorer"]] = {}
-            golea[goal["scorer"]]["total_points"] = 0
-            golea[goal["scorer"]]["total_goals"] = 0
-            golea[goal["scorer"]]["penalty_goals"] = 0
-            golea[goal["scorer"]]["own_goals"] = 0
-            golea[goal["scorer"]]["sum_time"] = 0
-            golea[goal["scorer"]]["avg_time [min]"] = 0
-            golea[goal["scorer"]]["scored_in_wins"] = 0
-            golea[goal["scorer"]]["scored_in_losses"] = 0
-            golea[goal["scorer"]]["scored_in_draws"] = 0
-            golea[goal["scorer"]]["last_goal"] = {}
-        # Suma de goles, penalty, autogoles y puntos
-        golea[goal["scorer"]]["total_goals"] += 1
-        if goal["penalty"] == "True":
-            golea[goal["scorer"]]["penalty_goals"] += 1
-        if goal["own_goal"] == "True":
-            golea[goal["scorer"]]["own_goals"] += 1
-        golea[goal["scorer"]]["total_points"] = golea[goal["scorer"]]["total_goals"] + golea[goal["scorer"]]["penalty_goals"] - golea[goal["scorer"]]["own_goals"]
-        # Suma y promedio de minutos
-        golea[goal["scorer"]]["sum_time"] += goal["minute"]
-        golea[goal["scorer"]]["avg_time [min]"] = golea[goal["scorer"]]["sum_time"]/golea[goal["scorer"]]["total_goals"]
-        # Goles en wins
-        if goal["team"] == goal[""]:
-            pass
         idunica =  str( i["date"]+ "-" + i["home_team"] + "-" + i["away_team"])
         goals += int(i["home_score"]) + int(i["away_score"])
         if mp.contains(scorers, idunica):

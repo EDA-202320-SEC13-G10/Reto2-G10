@@ -87,7 +87,7 @@ def print_req_1(control):
     # TODO: Imprimir el resultado del requerimiento 1
     print("Req No. 1 Input".center(130,"="))
 
-    n =  int(input("Number of matches: "))
+    n =  int(input("TOP N matches: "))
     team_name =  input("Team name: ")
     tipolocal =  input("Team condition: ")
 
@@ -112,13 +112,17 @@ def print_req_2(control):
     pass
 
 
-def print_req_3(control):
+def print_req_3(control, team, date_i, date_f):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    pass
-
+    map3 = controller.req_3(control, team, date_i, date_f)
+    print(me.getValue(mp.get(map3,"teams")))
+    print(me.getValue(mp.get(map3,"matches")))
+    print(me.getValue(mp.get(map3,"home_matches")))
+    print(me.getValue(mp.get(map3,"away_matches")))
+    print(tabulate(me.getValue(mp.get(map3,"values"))["elements"], headers = "keys" , tablefmt='grid'))
 
 def print_req_4(control, name, fecha_ini, fecha_fin):
     """
@@ -204,7 +208,7 @@ if __name__ == "__main__":
             print_req_2(control)
 
         elif int(inputs) == 4:
-            print_req_3(control)
+            print_req_3(control, "Italy", "1939-01-01", "2018-12-31")
 
         elif int(inputs) == 5:
             print_req_4(control, "Copa América", "1955-06-01", "2022-06-30")

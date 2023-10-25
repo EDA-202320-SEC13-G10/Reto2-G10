@@ -168,7 +168,8 @@ def req_3(control, team, date_i, date_f):
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    return model.req_3(control["model"], team, date_i, date_f)
+    map3 = model.req_3(control["model"], team, date_i, date_f)
+    return map3
 
 
 

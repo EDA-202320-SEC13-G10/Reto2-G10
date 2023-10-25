@@ -68,9 +68,46 @@ def load_data(control):
     """
     #TODO: Realizar la carga de datos
 
-    return controller.load_data(control)
+    controller.load_data(control)
+    rt =controller.sizedtosl(control["model"]["results1"])
+    gl = controller.sizedtosl(control["model"]["scorer1"])
+    sh = controller.sizedtosl(control["model"]["shootouts1"])
+
+    l1 = controller.primeros_ultimos(control["model"]["results1"])
+    l2= controller.primeros_ultimos(control["model"]["scorer1"])
+    l3 = controller.primeros_ultimos(control["model"]["shootouts1"])
 
 
+    print(('Match results count: ' + str(rt)).center(130))
+    print(('Goal scorers count: ' + str(gl)).center(130))
+    print(('Shootouts-penalty definition count: ' + str(sh)).center(130))
+    print("".center(130,"-"))
+    print("".center(130,"="))
+    print("FIFA RECORDS REPORT".center(130,"="))
+    print("".center(130,"="))
+
+    print("Print results for the first 3 and 3 last records on file.\n".center(130))
+    
+    print("".center(130,"-"))
+    print("MATCH RESULTS".center(130,"-"))
+    print("".center(130,"-"))
+    print("         Total match results: " +str(rt))
+    print("Results struct has more than 6 records...")
+    print(tabulate(l1["elements"] , headers = "keys" , tablefmt='grid'))
+    
+    print("".center(130,"-"))
+    print("GOAL SCORERS".center(130,"-"))
+    print("".center(130,"-"))
+    print("         Total goal scorers: " +str(gl))
+    print("Results struct has more than 6 records...")
+    print(tabulate(l2["elements"], headers = "keys" , tablefmt='grid'))
+    
+    print("".center(130,"-"))
+    print("SHOOTOUTS".center(130,"-"))
+    print("".center(130,"-"))
+    print("         Total shootouts: " +str(sh))
+    print("Results struct has more than 6 records...")
+    print(tabulate(l3["elements"], headers = "keys" , tablefmt='grid'))
 
 
 def print_data(control, id):
@@ -109,7 +146,23 @@ def print_req_2(control):
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    print("Req No. 2 Input".center(130,"="))
+    
+
+    n =  int(input("Number of scorer: "))
+    nombre =  input("Player name: ")
+    l1,l2, l3=controller.req_2(control,nombre,n)
+    print("Req No. 2 Results".center(130,"="))
+    print(("Total matches found "+ str(l3)).center(100))
+    print(("Selecting "+ str(l2) + " matches...").center(100))
+    if l3 > 6:
+        print("Resultrs struct has more than 6 records...")
+    else:
+        print("Resultrs struct has less than 6 records...")
+    print(tabulate(l1["elements"], headers = "keys", tablefmt='grid'))
+    print(l2)
+
+    
 
 
 def print_req_3(control, team, date_i, date_f):
@@ -157,8 +210,18 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    print("Req No. 6 Input".center(130,"="))
 
+    n =  int(input("TOP N equipos: "))
+    torneo=  input("Torneo: ")
+    anio =  input("Año: ")
+    l1, l2, l3 = controller.req_6(control,torneo,anio,n)
+    print(("Selecting "+ str(l2) + " matches...").center(100))
+    if l3 > 6:
+        print("Resultrs struct has more than 6 records...")
+    else:
+        print("Resultrs struct has less than 6 records...")
+    print(tabulate(l1["elements"], headers = "keys", tablefmt='grid'))
 
 def print_req_7(control, name, tamanio):
     """
@@ -199,13 +262,12 @@ if __name__ == "__main__":
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
-            data = load_data(control)
-            print(data)
+            load_data(control)
         elif int(inputs) == 2:
-            print_req_1(control, "15" "Italy", "home")
+            print_req_1(control)
 
         elif int(inputs) == 3:
-            print_req_2(control, "7", "Michael Ballack")
+            print_req_2(control)
 
         elif int(inputs) == 4:
             print_req_3(control, "Italy", "1939-01-01", "2018-12-31")

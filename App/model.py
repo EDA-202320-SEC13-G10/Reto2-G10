@@ -56,6 +56,9 @@ def new_data_structs():
         "results" : None,
         "scorer" : None,
         "shootouts" :None,
+        "results1" : None,
+        "scorer1" : None,
+        "shootouts1" :None,
         "tournaments" :None,
         "player" :None,
         "team": None
@@ -63,6 +66,11 @@ def new_data_structs():
     catalog["results"] =  mp.newMap(1759,
                             maptype="CHAINING",
                             loadfactor = 8)
+
+    catalog["results1"] =  lt.newList("ARRAY_LIST",compare_dates_inter_mayor)
+    catalog["scorer1"] =  lt.newList("ARRAY_LIST")
+    catalog["shootouts1"] =  lt.newList("ARRAY_LIST")
+
 
     catalog["scorer"] =  mp.newMap(800,
                             maptype="CHAINING",
@@ -93,11 +101,15 @@ def data_sizel(data_structs):
     Retorna el tamaño de la lista de datos
     """
     return lt.size(data_structs) 
+
+def adlista(control,posi,datos):
+    return lt.addLast(control["model"][posi],datos)
+
 def sublista(data_structs, pos_i, num):
     s =  lt.subList(data_structs, pos_i, num)
     return s
-
-
+def sortLista(control):
+    return merg.sort(control,compare_dates_inter_mayor)
 
 def first_last3(data_structs):
     primeros = sublista(data_structs,1,3)

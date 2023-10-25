@@ -124,7 +124,7 @@ def print_req_1(control):
     # TODO: Imprimir el resultado del requerimiento 1
     print("Req No. 1 Input".center(130,"="))
 
-    n =  int(input("Number of matches: "))
+    n =  int(input("TOP N matches: "))
     team_name =  input("Team name: ")
     tipolocal =  input("Team condition: ")
 
@@ -165,13 +165,17 @@ def print_req_2(control):
     
 
 
-def print_req_3(control):
+def print_req_3(control, team, date_i, date_f):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    pass
-
+    map3 = controller.req_3(control, team, date_i, date_f)
+    print(me.getValue(mp.get(map3,"teams")))
+    print(me.getValue(mp.get(map3,"matches")))
+    print(me.getValue(mp.get(map3,"home_matches")))
+    print(me.getValue(mp.get(map3,"away_matches")))
+    print(tabulate(me.getValue(mp.get(map3,"values"))["elements"], headers = "keys" , tablefmt='grid'))
 
 def print_req_4(control, name, fecha_ini, fecha_fin):
     """
@@ -250,13 +254,13 @@ if __name__ == "__main__":
             print("Cargando información de los archivos ....\n")
             load_data(control)
         elif int(inputs) == 2:
-            print_req_1(control)
+            print_req_1(control, "15" "Italy", "home")
 
         elif int(inputs) == 3:
-            print_req_2(control)
+            print_req_2(control, "7", "Michael Ballack")
 
         elif int(inputs) == 4:
-            print_req_3(control)
+            print_req_3(control, "Italy", "1939-01-01", "2018-12-31")
 
         elif int(inputs) == 5:
             print_req_4(control, "Copa América", "1955-06-01", "2022-06-30")
@@ -265,7 +269,7 @@ if __name__ == "__main__":
             print_req_5(control, "Ali Daei", "1999-03-25", "2021-11-23")
 
         elif int(inputs) == 7:
-            print_req_6(control)
+            print_req_6(control, "FIFA World Cup qualification", "11", "2021", "2021-01-01", "2021-12-31")
 
         elif int(inputs) == 8:
             print_req_7(control, "UEFA Euro qualification", 2)

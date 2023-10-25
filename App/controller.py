@@ -191,15 +191,8 @@ def req_3(control, team, date_i, date_f):
     # TODO: Modificar el reqtart = get_time()
     dtos =  model.req_3(control,date_i, date_f , team)
     # TODO: Modificar el requerimiento 3
-    size= model.data_sizel(dtos)
-    size_i = size
-    if size < 6:
-        dtos =  dtos
-    else:
-        dtos =  model.first_last3(dtos)
-
-         
-    return dtos
+    map3 = model.req_3(control["model"], team, date_i, date_f)
+    return map3
 
 
 

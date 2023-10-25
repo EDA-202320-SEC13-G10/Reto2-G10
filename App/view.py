@@ -68,7 +68,7 @@ def load_data(control):
     """
     #TODO: Realizar la carga de datos
 
-    controller.load_data(control)
+    return controller.load_data(control)
 
 
 
@@ -202,10 +202,10 @@ if __name__ == "__main__":
             data = load_data(control)
             print(data)
         elif int(inputs) == 2:
-            print_req_1(control)
+            print_req_1(control, "15" "Italy", "home")
 
         elif int(inputs) == 3:
-            print_req_2(control)
+            print_req_2(control, "7", "Michael Ballack")
 
         elif int(inputs) == 4:
             print_req_3(control, "Italy", "1939-01-01", "2018-12-31")
@@ -217,7 +217,7 @@ if __name__ == "__main__":
             print_req_5(control, "Ali Daei", "1999-03-25", "2021-11-23")
 
         elif int(inputs) == 7:
-            print_req_6(control)
+            print_req_6(control, "FIFA World Cup qualification", "11", "2021", "2021-01-01", "2021-12-31")
 
         elif int(inputs) == 8:
             print_req_7(control, "UEFA Euro qualification", 2)

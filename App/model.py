@@ -126,6 +126,7 @@ def add_data(data_structs, data):
     pass
 
 def add_results(catalog, dato, idunica):
+    #agrega una datos de results con una id unica usando una cadena combina a un hash
     results = catalog["results"]
     
     exitsResults =  mp.contains(results,idunica)
@@ -134,6 +135,7 @@ def add_results(catalog, dato, idunica):
 
 
 def new_Scorer():
+    #genera la estructura para un jugador
     games = {
         "datos" : None
     }
@@ -142,6 +144,7 @@ def new_Scorer():
 
 
 def add_scorer(catalog, dato, idunica ):
+    # comprueba si ya hay un jugador y si no lo crea usando la funcion anterior
     scorer = catalog["scorer"]
     exitsscorer =  mp.contains(scorer,idunica)
     if exitsscorer:
@@ -154,6 +157,7 @@ def add_scorer(catalog, dato, idunica ):
 
 
 def add_shootouts(catalog, dato, idunica ):
+    #agrega una datos de shootouts con una id unica usando una cadena combina a un hash
     shootouts = catalog["shootouts"]
     exitsshootouts =  mp.contains(shootouts,idunica)
     if exitsshootouts == False:
@@ -213,6 +217,7 @@ def add_team_names(lista,name):
         lt.addLast(lista,name)
 
 def new_tournament():
+    #gra una nueva estructura de datos para un torneo
     tournaments = {
         "datos" : None
     }
@@ -251,15 +256,16 @@ def req_1(data_structs, team, home):
     """
     Función que soluciona el requerimiento 1
     """
-    # TODO: Realizar el requerimiento 1
+    #filtra la funcion por equipo
     teams =  data_structs["team"]
     y = me.getValue(mp.get(teams,team))
-
+#determina si es home_team o away_team 
     x = "datos_home"
     if home  == "away":
         x = "datos_away"
     nl =  lt.newList("ARRAY_LIST")
     
+    #recorre la lista de hash del equipo en su cateria(home o away) y los agrega a una nueva lista
     for i in y[x]["elements"]:
         lt.addLast(nl,i)
     j = len(y["datos_home"]["elements"])+  len(y["datos_away"]["elements"])
@@ -485,7 +491,7 @@ def new_bests_Player():
 
     return team_country
 
-def req_6(data_structs, torneo = "FIFA World Cup qualification", anio = "2021"):
+def req_6(data_structs, torneo , anio):
     """
     Función que soluciona el requerimiento 6
     """
